@@ -1,0 +1,42 @@
+`timescale 1ns / 1ps
+
+module t_vending_machine();
+reg clk,rst;
+reg nickel,dime,quarter;
+wire theProduct;
+
+
+vending_machine t_vending_machine(
+.clk(clk),
+.rst(rst),
+.nickel(nickel),
+.quarter(quarter),
+.dime(dime),
+.theProduct(theProduct)
+);
+always#5 clk = ~clk;
+
+initial
+begin
+clk<= 0;
+nickel <= 0;
+dime <= 0;
+quarter <= 0;
+rst <= 1;
+#50;
+rst <= 0;
+#10
+
+
+nickel=1;dime=0;quarter=0; #10;
+nickel=1;dime=0;quarter=0; #10;
+nickel=0;dime=1;quarter=0; #10;
+nickel=0;dime=1;quarter=0; #10;
+nickel=0;dime=0;quarter=1; #10;
+nickel=0;dime=0;quarter=1; #10;
+nickel=0;dime=1;quarter=0; #10;
+nickel=0;dime=0;quarter=0; #10;
+
+
+end
+endmodule

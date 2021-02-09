@@ -1,0 +1,194 @@
+`timescale 1ns / 1ps
+
+module vending_machine(
+input  clk,
+input  rst,
+input  nickel,
+input  dime,
+input  quarter,
+output reg theProduct
+);
+
+reg [2:0] state, next_state;
+
+parameter [2:0] IDLE= 3'b000,
+five = 3'b001,
+ten = 3'b010,
+fifteen = 3'b011,
+twenty = 3'b100,
+twenty_five = 3'b101,
+thirty = 3'b110;
+
+
+always@(posedge clk or posedge rst)
+
+begin
+    if(rst) 
+        state <= IDLE;
+    else     
+        state <=next_state;
+end
+
+always@(*)
+    case(state)
+    IDLE: begin
+               if (nickel== 1'b1 && dime==1'b0 && quarter==1'b0) 
+                begin
+                next_state <= five;
+                theProduct <= 1'b0;
+                end
+                else if (nickel== 1'b0 && dime==1'b1 && quarter==1'b0) 
+                begin
+                next_state <= ten;
+                theProduct <= 1'b0;
+                end
+                else if (nickel== 1'b0 && dime==1'b0 && quarter==1'b1) 
+                begin
+                next_state <= twenty_five;
+                theProduct <= 1'b0;
+                end
+                else
+                begin
+                    next_state <= IDLE;
+                    theProduct<= 1'b0;
+                end
+          end
+       five: begin                                                       
+                  if (nickel== 1'b1 && dime==1'b0 && quarter==1'b0)      
+                   begin                                                 
+                   next_state <= ten;                                   
+                   theProduct <= 1'b0;                                   
+                   end                                                   
+                   else if (nickel== 1'b0 && dime==1'b1 && quarter==1'b0)
+                   begin                                                 
+                   next_state <= fifteen;                                    
+                   theProduct <= 1'b0;                                   
+                   end                                                   
+                   else if (nickel== 1'b0 && dime==1'b0 && quarter==1'b1)
+                   begin                                                 
+                   next_state <= thirty;                            
+                   theProduct <= 1'b0;                                   
+                   end                                                   
+                   else                                                  
+                   begin                                                 
+                       next_state <= five;                               
+                       theProduct<= 1'b0;                                
+                   end                                                   
+        end
+      ten: begin                                                                  
+                 if (nickel== 1'b1 && dime==1'b0 && quarter==1'b0) 
+                  begin                                                            
+                  next_state <= fifteen;                                               
+                  theProduct <= 1'b0;                                               
+                  end                                                              
+                  else if (nickel== 1'b0 && dime==1'b1 && quarter==1'b0)
+                  begin                                                            
+                  next_state <= twenty;                                                
+                  theProduct <= 1'b0;                                               
+                  end                                                              
+                  else if (nickel== 1'b0 && dime==1'b0 && quarter==1'b1)
+                  begin                                                            
+                  next_state <= IDLE;                                        
+                  theProduct <= 1'b1;                                               
+                  end                                                              
+                  else                                                             
+                  begin                                                            
+                      next_state <= ten;                                              
+                      theProduct<= 1'b0;                                                
+                  end                                                                   
+            end 
+      fifteen: begin                                                   
+                 if (nickel== 1'b1 && dime==1'b0 && quarter==1'b0) 
+                  begin                                            
+                  next_state <= twenty;                            
+                  theProduct <= 1'b0;                               
+                  end                                              
+                  else if (nickel== 1'b0 && dime==1'b1 && quarter==1'b0)
+                  begin                                            
+                  next_state <= twenty_five;                             
+                  theProduct <= 1'b0;                               
+                  end                                              
+                  else if (nickel== 1'b0 && dime==1'b0 && quarter==1'b1)
+                  begin                                            
+                  next_state <= IDLE;                             
+                  theProduct <= 1'b1;                               
+                  end                                              
+                  else                                             
+                  begin                                            
+                      next_state <= fifteen;                         
+                      theProduct<= 1'b0;                           
+                  end                                              
+            end                                                    
+        twenty: begin                                               
+                   if (nickel== 1'b1 && dime==1'b0 && quarter==1'b0) 
+                    begin                                            
+                    next_state <= twenty_five;                             
+                    theProduct <= 1'b0;                               
+                    end                                              
+                    else if (nickel== 1'b0 && dime==1'b1 && quarter==1'b0)
+                    begin                                            
+                    next_state <= thirty;                             
+                    theProduct <= 1'b0;                               
+                    end                                              
+                    else if (nickel== 1'b0 && dime==1'b0 && quarter==1'b1)
+                    begin                                            
+                    next_state <= IDLE;                               
+                    theProduct <= 1'b1;                               
+                    end                                              
+                    else                                             
+                    begin                                            
+                        next_state <= twenty;                         
+                        theProduct<= 1'b0;                           
+                    end                                              
+        
+        end
+        twenty_five: begin                                                
+                    if (nickel== 1'b1 && dime==1'b0 && quarter==1'b0) 
+                    begin                                            
+                    next_state <= thirty;                        
+                    theProduct <= 1'b0;                               
+                    end                                              
+                    else if (nickel== 1'b0 && dime==1'b1 && quarter==1'b0)
+                    begin                                            
+                    next_state <= IDLE;                             
+                    theProduct <= 1'b1;                               
+                    end                                              
+                    else if (nickel== 1'b0 && dime==1'b0 && quarter==1'b1)
+                    begin                                            
+                    next_state <= IDLE;                               
+                    theProduct <= 1'b1;                               
+                    end                                              
+                    else                                             
+                    begin                                            
+                        next_state <= twenty_five;                         
+                        theProduct<= 1'b0;                           
+                    end                                              
+        end                                                             
+        thirty: begin                                                
+                   if (nickel== 1'b1 && dime==1'b0 && quarter==1'b0) 
+                    begin                                            
+                    next_state <= IDLE;                        
+                    theProduct <= 1'b1;                               
+                    end                                              
+                    else if (nickel== 1'b0 && dime==1'b1 && quarter==1'b0)
+                    begin                                            
+                    next_state <= IDLE;                             
+                    theProduct <= 1'b1;                               
+                    end                                              
+                    else if (nickel== 1'b0 && dime==1'b0 && quarter==1'b1)
+                    begin                                            
+                    next_state <= IDLE;                               
+                    theProduct <= 1'b1;                               
+                    end                                              
+                    else                                             
+                    begin                                            
+                        next_state <= thirty;                         
+                        theProduct<= 1'b0;                           
+                    end                                              
+                                                                     
+        end
+        default: begin
+            next_state <= IDLE;    
+            end                                                                        
+    endcase    
+endmodule
